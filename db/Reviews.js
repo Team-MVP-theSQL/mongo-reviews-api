@@ -1,7 +1,8 @@
-let mongoose = require('mongoose');
+const mongoose = require('mongoose');
+const db = require('./index');
 
-let reviewsSchema = new mongoose.Schema({
-  shoeId: Number,
+const reviewsSchema = new mongoose.Schema({
+  shoeid: Number,
   nickname: String,
   location: String,
   title: String,
@@ -10,12 +11,12 @@ let reviewsSchema = new mongoose.Schema({
   pros: [{type: String}],
   cons: [{type: String}],
   recommended: Boolean,
-  overallRating: Number,
-  qualityRating: Number,
-  valueRating: Number,
-  timeCreated: String,
+  overallrating: Number,
+  qualityrating: Number,
+  valuerating: Number,
+  timecreated: String,
 });
 
-let Reviews = mongoose.model('Reviews', reviewsSchema);
+const Review = mongoose.model('Review', reviewsSchema);
 
-module.exports = Reviews;
+module.exports = Review;

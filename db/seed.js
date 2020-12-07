@@ -1,19 +1,21 @@
 const db = require('./index.js');
-const Reviews = require('./Reviews.js');
+const Review = require('./Reviews.js');
 const faker = require('faker');
-const mongoose = require('mongoose');
+const fs = require('fs');
+const csv = require('fast-csv');
 
-let seedFunc = () => {
+let seedFunc = async () => {
 
   let seedObjects = [];
+  let numSeeded = 0;
 
-  for (let i = 0; i < 500000; i++) {
+  for (let i = 0; i < 10000000; i++) {
 
     let randomImages = [];
 
     let randomNumberOfImages = Math.floor(Math.random() * 3);
     for (let j = 0; j < randomNumberOfImages; j++) {
-      randomImages.push(faker.image.imageUrl());
+      randomImages.push(`https://loremflickr.com/640/480/shoelaces?random=${j}`);
     }
 
     let pros = [];
@@ -29,7 +31,7 @@ let seedFunc = () => {
       cons.push(faker.lorem.word());
     }
 
-    let randomShoeId = Math.floor(Math.random() * 50000);
+    let randomShoeId = Math.floor(Math.random() * 2000000);
 
     let seedObject = {
       shoeId: randomShoeId,
@@ -48,23 +50,25 @@ let seedFunc = () => {
     };
 
     seedObjects.push(seedObject);
+
+    if (i % 20000 === 0) {
+      numSeeded += 20000;
+      console.log(`${numSeeded} reviews added to array.`);
+    }
   }
 
-  Reviews.deleteMany({})
-    .then(() => {
-      console.log('Reviews deleted')
-      Reviews.insertMany(seedObjects)
-        .then(() => {
-          console.log('Reviews seeded');
-          mongoose.connection.close();
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-    })
-    .catch((err) => {
-      console.error(err);
-    });
+  console.log('writing to csv');
+  let ws = fs.createWriteStream('seed.csv');
+  csv.write(seedObjects, {headers: true})
+    .pipe(ws);
+
 };
 
 seedFunc();
+
+// const runSeed = async () => {
+//   await seedFunc();
+//   //mongoose.connection.close();
+// }
+
+// runSeed();

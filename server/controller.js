@@ -30,7 +30,16 @@ let controller = {
       });
   },
   getShoeReviews: (req, res) => {
-    Reviews.find({ shoeId: req.params.shoeId })
+    Reviews.find({ shoeid: req.params.shoeid })
+      .then((data) => {
+        res.status(200).send(data);
+      })
+      .catch((err) => {
+        res.status(400).send(err);
+      });
+  },
+  getOneReview: (req, res) => {
+    Reviews.findOne({ _id: req.params.id })
       .then((data) => {
         res.status(200).send(data);
       })
@@ -41,11 +50,11 @@ let controller = {
   put: (req, res) => {
     Reviews.updateOne({ _id: req.params.id }, req.body )
       .then(() => {
-        res.status(200).send('Entry updated')
+        res.status(200).send('Entry updated');
       })
       .catch((err) => {
         res.status(500).send(err);
-      })
+      });
   },
   deleteOne: (req, res) => {
     Reviews.deleteOne({ _id: req.params.id })
